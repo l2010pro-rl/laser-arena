@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NEON ARENA: ELITE SQUAD - MODDABLE EDITION</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -391,9 +394,9 @@ transform: translateY(-10px);
 box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 }
 .char-card.focused {
-    box-shadow: 0 0 0 4px #fff, 0 0 30px var(--char-color, #fff);
-    transform: scale(1.05) translateY(-10px);
-    z-index: 10;
+box-shadow: 0 0 0 4px #fff, 0 0 30px var(--char-color, #fff);
+transform: scale(1.05) translateY(-10px);
+z-index: 10;
 }
 .char-card.selected {
 box-shadow: 0 0 30px var(--char-color, #fff);
@@ -1053,79 +1056,99 @@ height: 100%;
 z-index: 0;
 pointer-events: none;
 }
-
 /* Controller Status Indicator */
 .controller-status {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid #333;
-    border-radius: 20px;
-    font-size: 12px;
-    color: #888;
-    transition: all 0.3s;
-    z-index: 100;
+position: absolute;
+top: 20px;
+right: 20px;
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 8px 15px;
+background: rgba(0,0,0,0.6);
+border: 1px solid #333;
+border-radius: 20px;
+font-size: 12px;
+color: #888;
+transition: all 0.3s;
+z-index: 100;
 }
 .controller-status.connected {
-    border-color: var(--neon-green);
-    color: var(--neon-green);
-    box-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
+border-color: var(--neon-green);
+color: var(--neon-green);
+box-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
 }
 .controller-icon {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
+width: 20px;
+height: 20px;
+fill: currentColor;
 }
 .controller-hints {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px;
-    font-size: 12px;
-    color: #666;
-    background: rgba(0,0,0,0.5);
-    padding: 10px 20px;
-    border-radius: 30px;
-    border: 1px solid #333;
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
+position: absolute;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+gap: 20px;
+font-size: 12px;
+color: #666;
+background: rgba(0,0,0,0.5);
+padding: 10px 20px;
+border-radius: 30px;
+border: 1px solid #333;
+opacity: 0;
+transition: opacity 0.5s;
+pointer-events: none;
 }
 .controller-hints.visible {
-    opacity: 1;
+opacity: 1;
 }
 .ps-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #333;
-    color: white;
-    font-weight: bold;
-    font-size: 10px;
-    margin-right: 5px;
-    border: 1px solid #555;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: #333;
+color: white;
+font-weight: bold;
+font-size: 10px;
+margin-right: 5px;
+border: 1px solid #555;
 }
 .ps-btn.triangle { color: #2ecc71; border-color: #2ecc71; }
 .ps-btn.circle { color: #e74c3c; border-color: #e74c3c; }
 .ps-btn.cross { color: #3498db; border-color: #3498db; }
 .ps-btn.square { color: #9b59b6; border-color: #9b59b6; }
-.ps-btn.r2, .ps-btn.l2 { 
-    width: 30px; 
-    height: 15px; 
-    border-radius: 5px 5px 0 0; 
-    font-size: 9px;
+.ps-btn.r2, .ps-btn.l2 {
+width: 30px;
+height: 15px;
+border-radius: 5px 5px 0 0;
+font-size: 9px;
 }
-
+/* Multiplayer Toggle Style */
+.mp-toggle {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 20px;
+color: #aaa;
+cursor: pointer;
+}
+.mp-toggle.active .toggle-switch {
+background: var(--neon-purple);
+}
+.mp-toggle.active .toggle-switch::after {
+transform: translateX(24px);
+}
+.mp-status {
+font-size: 12px;
+color: #888;
+margin-top: 5px;
+}
+.mp-status.online { color: var(--neon-green); }
+.mp-status.offline { color: var(--neon-red); }
 </style>
 </head>
 <body>
@@ -1133,24 +1156,21 @@ pointer-events: none;
 <div class="cinematic-overlay"></div>
 <div class="scanlines"></div>
 <div id="uiLayer">
-
 <!-- Controller Status -->
 <div class="controller-status" id="controllerStatus">
-    <svg class="controller-icon" viewBox="0 0 24 24">
-        <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-    </svg>
-    <span id="controllerText">IN ATTESA CONTROLLER...</span>
+<svg class="controller-icon" viewBox="0 0 24 24">
+<path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+</svg>
+<span id="controllerText">IN ATTESA CONTROLLER...</span>
 </div>
-
 <!-- Controller Hints (Visible during gameplay) -->
 <div class="controller-hints" id="controllerHints">
-    <div><span class="ps-btn cross"></span>Schiva</div>
-    <div><span class="ps-btn square"></span>Abil 1</div>
-    <div><span class="ps-btn circle"></span>Abil 2</div>
-    <div><span class="ps-btn triangle"></span>Ultimate</div>
-    <div><span class="ps-btn r2">R2</span>Sparo</div>
+<div><span class="ps-btn cross"></span>Schiva</div>
+<div><span class="ps-btn square"></span>Abil 1</div>
+<div><span class="ps-btn circle"></span>Abil 2</div>
+<div><span class="ps-btn triangle"></span>Ultimate</div>
+<div><span class="ps-btn r2">R2</span>Sparo</div>
 </div>
-
 <div id="hud" class="hidden">
 <div class="pause-btn" onclick="app.togglePause()">⏸️</div>
 <div class="score-panel hud-element">
@@ -1257,6 +1277,11 @@ pointer-events: none;
 <div class="toggle-switch"></div>
 <span>HARDCORE MODE (Difficile)</span>
 </label>
+<label class="mp-toggle" id="mpToggle" onclick="this.classList.toggle('active')">
+<div class="toggle-switch"></div>
+<span>MULTIPLAYER ONLINE (Beta)</span>
+</label>
+<div class="mp-status offline" id="mpStatus">FIREBASE: CONNESSO</div>
 <button class="btn-main" onclick="app.showCharacterSelect()">SELEZIONA OPERATORE</button>
 <button class="btn-main" style="border-color: #ffd700;" onclick="app.showShop()">SHOP SKIN</button>
 <button class="btn-main" style="border-color: #aaa;" onclick="app.showSettings()">IMPOSTAZIONI</button>
@@ -1708,70 +1733,93 @@ pointer-events: none;
 </div>
 </div>
 <script>
-// --- MOD SYSTEM ---
-const modConfig = {
-    lobbyTitle: "NEON ARENA",
-    playerMods: {},
-    bossMods: {}
+// --- FIREBASE CONFIGURATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyCxDqAkTWJQr7z8jX5WoX-gJ2AOn7KehpQ",
+  authDomain: "laser-arena-rl.firebaseapp.com",
+  databaseURL: "https://laser-arena-rl-default-rtdb.firebaseio.com",
+  projectId: "laser-arena-rl",
+  storageBucket: "laser-arena-rl.firebasestorage.app",
+  messagingSenderId: "321905322072",
+  appId: "1:321905322072:web:64a18545fe94ff61bec22d"
 };
 
-async function loadMods() {
-    try {
-        const response = await fetch('mod/config.json');
-        if (!response.ok) throw new Error("No mod file found");
-        const data = await response.json();
-        
-        // Apply Page Title
-        if (data.page_title) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.page_title;
-            const titleTag = tempDiv.querySelector('title');
-            if (titleTag) document.title = titleTag.textContent;
-        }
+let db = null;
+let isMultiplayer = false;
+let myPlayerId = Math.random().toString(36).substr(2, 9);
+let remotePlayers = {};
+let mpRoomRef = null;
 
-        // Apply Lobby Title
-        if (data.lobby_title) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data.lobby_title;
-            const lobbyTag = tempDiv.querySelector('neon_arena_lobby');
-            if (lobbyTag) {
-                modConfig.lobbyTitle = lobbyTag.textContent;
-                document.getElementById('lobbyTitle').textContent = modConfig.lobbyTitle;
-            }
-        }
-
-        // Apply Player Mods
-        if (data.player_mods) {
-            for (const [key, value] of Object.entries(data.player_mods)) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = value;
-                const changeTag = tempDiv.querySelector(`player.${key}.change`);
-                if (changeTag) {
-                    modConfig.playerMods[key] = changeTag.textContent.trim();
-                    console.log(`Mod loaded for ${key}: ${modConfig.playerMods[key]}`);
-                }
-            }
-        }
-
-        // Apply Boss Mods
-        if (data.boss_mods) {
-            for (const [key, value] of Object.entries(data.boss_mods)) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = value;
-                const changeTag = tempDiv.querySelector(`boss.${key}.change`);
-                if (changeTag) {
-                    modConfig.bossMods[key] = changeTag.textContent.trim();
-                    console.log(`Mod loaded for Boss ${key}: ${modConfig.bossMods[key]}`);
-                }
-            }
-        }
-        
-        console.log("Mods loaded successfully!");
-    } catch (error) {
-        console.log("Running in vanilla mode (no mods detected or CORS error).");
-    }
+function initFirebase() {
+try {
+firebase.initializeApp(firebaseConfig);
+db = firebase.database();
+document.getElementById('mpStatus').textContent = "FIREBASE: CONNESSO";
+document.getElementById('mpStatus').classList.add('online');
+document.getElementById('mpStatus').classList.remove('offline');
+} catch(e) {
+console.error("Errore Firebase:", e);
+document.getElementById('mpStatus').textContent = "FIREBASE: ERRORE CONNESSIONE";
+}
 }
 
+// --- MOD SYSTEM ---
+const modConfig = {
+lobbyTitle: "NEON ARENA",
+playerMods: {},
+bossMods: {}
+};
+async function loadMods() {
+try {
+const response = await fetch('mod/config.json');
+if (!response.ok) throw new Error("No mod file found");
+const data = await response.json();
+// Apply Page Title
+if (data.page_title) {
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = data.page_title;
+const titleTag = tempDiv.querySelector('title');
+if (titleTag) document.title = titleTag.textContent;
+}
+// Apply Lobby Title
+if (data.lobby_title) {
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = data.lobby_title;
+const lobbyTag = tempDiv.querySelector('neon_arena_lobby');
+if (lobbyTag) {
+modConfig.lobbyTitle = lobbyTag.textContent;
+document.getElementById('lobbyTitle').textContent = modConfig.lobbyTitle;
+}
+}
+// Apply Player Mods
+if (data.player_mods) {
+for (const [key, value] of Object.entries(data.player_mods)) {
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = value;
+const changeTag = tempDiv.querySelector(`player.${key}.change`);
+if (changeTag) {
+modConfig.playerMods[key] = changeTag.textContent.trim();
+console.log(`Mod loaded for ${key}: ${modConfig.playerMods[key]}`);
+}
+}
+}
+// Apply Boss Mods
+if (data.boss_mods) {
+for (const [key, value] of Object.entries(data.boss_mods)) {
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = value;
+const changeTag = tempDiv.querySelector(`boss.${key}.change`);
+if (changeTag) {
+modConfig.bossMods[key] = changeTag.textContent.trim();
+console.log(`Mod loaded for Boss ${key}: ${modConfig.bossMods[key]}`);
+}
+}
+}
+console.log("Mods loaded successfully!");
+} catch (error) {
+console.log("Running in vanilla mode (no mods detected or CORS error).");
+}
+}
 // NEW: Save System & Shop Data
 const SAVE_KEY = 'neon_arena_save_v1';
 let gameData = {
@@ -1901,222 +1949,191 @@ resize();
 const keys = {};
 const mouse = { x: 0, y: 0, down: false };
 const joystick = { active: false, originX: 0, originY: 0, currentX: 0, currentY: 0, deltaX: 0, deltaY: 0, angle: 0, magnitude: 0 };
-
 // --- GAMEPAD SYSTEM (PS5 CONTROLLER) ---
 const gamepadState = {
-    connected: false,
-    index: null,
-    axes: { leftX: 0, leftY: 0, rightX: 0, rightY: 0 },
-    buttons: {
-        cross: false, circle: false, square: false, triangle: false,
-        l1: false, r1: false, l2: 0, r2: 0,
-        options: false, touchpad: false, up: false, down: false, left: false, right: false
-    },
-    prevButtons: {},
-    navCooldown: 0
+connected: false,
+index: null,
+axes: { leftX: 0, leftY: 0, rightX: 0, rightY: 0 },
+buttons: {
+cross: false, circle: false, square: false, triangle: false,
+l1: false, r1: false, l2: 0, r2: 0,
+options: false, touchpad: false, up: false, down: false, left: false, right: false
+},
+prevButtons: {},
+navCooldown: 0
 };
-
 function handleGamepadConnected(e) {
-    gamepadState.connected = true;
-    gamepadState.index = e.gamepad.index;
-    const statusEl = document.getElementById('controllerStatus');
-    const textEl = document.getElementById('controllerText');
-    statusEl.classList.add('connected');
-    textEl.textContent = "CONTROLLER CONNESSO";
-    console.log("Gamepad connected:", e.gamepad.id);
-    AudioSys.ui();
+gamepadState.connected = true;
+gamepadState.index = e.gamepad.index;
+const statusEl = document.getElementById('controllerStatus');
+const textEl = document.getElementById('controllerText');
+statusEl.classList.add('connected');
+textEl.textContent = "CONTROLLER CONNESSO";
+console.log("Gamepad connected:", e.gamepad.id);
+AudioSys.ui();
 }
-
 function handleGamepadDisconnected(e) {
-    gamepadState.connected = false;
-    gamepadState.index = null;
-    const statusEl = document.getElementById('controllerStatus');
-    const textEl = document.getElementById('controllerText');
-    statusEl.classList.remove('connected');
-    textEl.textContent = "IN ATTESA CONTROLLER...";
-    console.log("Gamepad disconnected");
+gamepadState.connected = false;
+gamepadState.index = null;
+const statusEl = document.getElementById('controllerStatus');
+const textEl = document.getElementById('controllerText');
+statusEl.classList.remove('connected');
+textEl.textContent = "IN ATTESA CONTROLLER...";
+console.log("Gamepad disconnected");
 }
-
 window.addEventListener("gamepadconnected", handleGamepadConnected);
 window.addEventListener("gamepaddisconnected", handleGamepadDisconnected);
-
 function pollGamepad() {
-    if (!gamepadState.connected || gamepadState.index === null) return;
-    
-    const gamepads = navigator.getGamepads();
-    const gp = gamepads[gamepadState.index];
-    
-    if (!gp) {
-        gamepadState.connected = false;
-        return;
-    }
-
-    // Axes: 0=LeftX, 1=LeftY, 2=RightX, 3=RightY
-    // Deadzone to prevent drift
-    const deadzone = 0.15;
-    gamepadState.axes.leftX = Math.abs(gp.axes[0]) > deadzone ? gp.axes[0] : 0;
-    gamepadState.axes.leftY = Math.abs(gp.axes[1]) > deadzone ? gp.axes[1] : 0;
-    gamepadState.axes.rightX = Math.abs(gp.axes[2]) > deadzone ? gp.axes[2] : 0;
-    gamepadState.axes.rightY = Math.abs(gp.axes[3]) > deadzone ? gp.axes[3] : 0;
-
-    // Buttons mapping (Standard Mapping API)
-    // 0: Cross(X), 1: Circle(O), 2: Square(□), 3: Triangle(△)
-    // 4: L1, 5: R1, 6: L2, 7: R2
-    // 8: Select, 9: Start(Options), 10: Left Stick, 11: Right Stick
-    // 12: Up, 13: Down, 14: Left, 15: Right
-    // 16: PS Button (often not accessible), 17: Touchpad
-    
-    gamepadState.buttons.cross = gp.buttons[0].pressed;
-    gamepadState.buttons.circle = gp.buttons[1].pressed;
-    gamepadState.buttons.square = gp.buttons[2].pressed;
-    gamepadState.buttons.triangle = gp.buttons[3].pressed;
-    gamepadState.buttons.l1 = gp.buttons[4].pressed;
-    gamepadState.buttons.r1 = gp.buttons[5].pressed;
-    
-    // Analog triggers
-    gamepadState.buttons.l2 = gp.buttons[6].value; 
-    gamepadState.buttons.r2 = gp.buttons[7].value;
-    
-    gamepadState.buttons.options = gp.buttons[9].pressed;
-    gamepadState.buttons.touchpad = gp.buttons[17] ? gp.buttons[17].pressed : false;
-    
-    // D-Pad
-    gamepadState.buttons.up = gp.buttons[12].pressed;
-    gamepadState.buttons.down = gp.buttons[13].pressed;
-    gamepadState.buttons.left = gp.buttons[14].pressed;
-    gamepadState.buttons.right = gp.buttons[15].pressed;
-
-    // Handle button presses (Edge detection)
-    if (gamepadState.buttons.options && !gamepadState.prevButtons.options) {
-        app.togglePause();
-    }
-    if (gamepadState.buttons.touchpad && !gamepadState.prevButtons.touchpad) {
-        app.togglePause();
-    }
-
-    // Ability Inputs (In Game)
-    if (currentState === GameState.PLAYING) {
-        if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) app.useAbility(1); // X
-        if (gamepadState.buttons.square && !gamepadState.prevButtons.square) app.useAbility(2); // Square
-        if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) app.useAbility(3); // Circle
-        if (gamepadState.buttons.triangle && !gamepadState.prevButtons.triangle) app.useAbility(4); // Triangle
-
-        // Shooting
-        if (gamepadState.buttons.r2 > 0.1) {
-            mouse.down = true;
-        } else {
-            if (!keys['Space'] && !keys['Enter']) mouse.down = false;
-        }
-
-        // Special Shot / Charge (L2)
-        if (gamepadState.buttons.l2 > 0.1) {
-           mouse.specialCharge = true;
-        } else {
-           mouse.specialCharge = false;
-        }
-    } 
-    
-    // Menu Navigation Logic
-    if (currentState === GameState.MENU || currentState === GameState.GAMEOVER) {
-        if (gamepadState.navCooldown <= 0) {
-            let moved = false;
-            // Use Left Stick or D-Pad for navigation
-            if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
-                app.focusNextButton(-1);
-                moved = true;
-            } else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
-                app.focusNextButton(1);
-                moved = true;
-            }
-            
-            if (moved) {
-                gamepadState.navCooldown = 15; // Cooldown frames
-                AudioSys.ui();
-            }
-        }
-        
-        // Confirm (Cross)
-        if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
-            app.activateFocusedButton();
-        }
-    }
-    
-    // Character Select Navigation
-    if (currentState === GameState.CHAR_SELECT) {
-         if (gamepadState.navCooldown <= 0) {
-            let moved = false;
-            if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
-                app.focusNextChar(-1);
-                moved = true;
-            } else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
-                app.focusNextChar(1);
-                moved = true;
-            } else if (gamepadState.axes.leftX < -0.5 || gamepadState.buttons.left) {
-                app.focusNextChar(-1);
-                moved = true;
-            } else if (gamepadState.axes.leftX > 0.5 || gamepadState.buttons.right) {
-                app.focusNextChar(1);
-                moved = true;
-            }
-            
-            if (moved) {
-                gamepadState.navCooldown = 10;
-                AudioSys.ui();
-            }
-        }
-        
-        // Select Char (Cross)
-        if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
-            app.confirmCharSelection();
-        }
-        
-        // Back (Circle)
-        if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) {
-            app.showStartScreen();
-        }
-    }
-    
-    // Shop Navigation
-    if (currentState === GameState.SHOP) {
-        if (gamepadState.navCooldown <= 0) {
-             let moved = false;
-            if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
-                app.focusNextShopItem(-1);
-                moved = true;
-            } else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
-                app.focusNextShopItem(1);
-                moved = true;
-            }
-            
-            if (moved) {
-                gamepadState.navCooldown = 10;
-                AudioSys.ui();
-            }
-        }
-        
-        if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
-            app.buyFocusedSkin();
-        }
-        
-        if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) {
-            app.showStartScreen();
-        }
-    }
-
-    // Copy state for next frame edge detection
-    gamepadState.prevButtons = { ...gamepadState.buttons };
-    if (gamepadState.navCooldown > 0) gamepadState.navCooldown--;
+if (!gamepadState.connected || gamepadState.index === null) return;
+const gamepads = navigator.getGamepads();
+const gp = gamepads[gamepadState.index];
+if (!gp) {
+gamepadState.connected = false;
+return;
 }
-
+// Axes: 0=LeftX, 1=LeftY, 2=RightX, 3=RightY
+// Deadzone to prevent drift
+const deadzone = 0.15;
+gamepadState.axes.leftX = Math.abs(gp.axes[0]) > deadzone ? gp.axes[0] : 0;
+gamepadState.axes.leftY = Math.abs(gp.axes[1]) > deadzone ? gp.axes[1] : 0;
+gamepadState.axes.rightX = Math.abs(gp.axes[2]) > deadzone ? gp.axes[2] : 0;
+gamepadState.axes.rightY = Math.abs(gp.axes[3]) > deadzone ? gp.axes[3] : 0;
+// Buttons mapping (Standard Mapping API)
+// 0: Cross(X), 1: Circle(O), 2: Square(□), 3: Triangle(△)
+// 4: L1, 5: R1, 6: L2, 7: R2
+// 8: Select, 9: Start(Options), 10: Left Stick, 11: Right Stick
+// 12: Up, 13: Down, 14: Left, 15: Right
+// 16: PS Button (often not accessible), 17: Touchpad
+gamepadState.buttons.cross = gp.buttons[0].pressed;
+gamepadState.buttons.circle = gp.buttons[1].pressed;
+gamepadState.buttons.square = gp.buttons[2].pressed;
+gamepadState.buttons.triangle = gp.buttons[3].pressed;
+gamepadState.buttons.l1 = gp.buttons[4].pressed;
+gamepadState.buttons.r1 = gp.buttons[5].pressed;
+// Analog triggers
+gamepadState.buttons.l2 = gp.buttons[6].value;
+gamepadState.buttons.r2 = gp.buttons[7].value;
+gamepadState.buttons.options = gp.buttons[9].pressed;
+gamepadState.buttons.touchpad = gp.buttons[17] ? gp.buttons[17].pressed : false;
+// D-Pad
+gamepadState.buttons.up = gp.buttons[12].pressed;
+gamepadState.buttons.down = gp.buttons[13].pressed;
+gamepadState.buttons.left = gp.buttons[14].pressed;
+gamepadState.buttons.right = gp.buttons[15].pressed;
+// Handle button presses (Edge detection)
+if (gamepadState.buttons.options && !gamepadState.prevButtons.options) {
+app.togglePause();
+}
+if (gamepadState.buttons.touchpad && !gamepadState.prevButtons.touchpad) {
+app.togglePause();
+}
+// Ability Inputs (In Game)
+if (currentState === GameState.PLAYING) {
+if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) app.useAbility(1); // X
+if (gamepadState.buttons.square && !gamepadState.prevButtons.square) app.useAbility(2); // Square
+if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) app.useAbility(3); // Circle
+if (gamepadState.buttons.triangle && !gamepadState.prevButtons.triangle) app.useAbility(4); // Triangle
+// Shooting
+if (gamepadState.buttons.r2 > 0.1) {
+mouse.down = true;
+} else {
+if (!keys['Space'] && !keys['Enter']) mouse.down = false;
+}
+// Special Shot / Charge (L2)
+if (gamepadState.buttons.l2 > 0.1) {
+mouse.specialCharge = true;
+} else {
+mouse.specialCharge = false;
+}
+}
+// Menu Navigation Logic
+if (currentState === GameState.MENU || currentState === GameState.GAMEOVER) {
+if (gamepadState.navCooldown <= 0) {
+let moved = false;
+// Use Left Stick or D-Pad for navigation
+if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
+app.focusNextButton(-1);
+moved = true;
+} else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
+app.focusNextButton(1);
+moved = true;
+}
+if (moved) {
+gamepadState.navCooldown = 15; // Cooldown frames
+AudioSys.ui();
+}
+}
+// Confirm (Cross)
+if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
+app.activateFocusedButton();
+}
+}
+// Character Select Navigation
+if (currentState === GameState.CHAR_SELECT) {
+if (gamepadState.navCooldown <= 0) {
+let moved = false;
+if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
+app.focusNextChar(-1);
+moved = true;
+} else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
+app.focusNextChar(1);
+moved = true;
+} else if (gamepadState.axes.leftX < -0.5 || gamepadState.buttons.left) {
+app.focusNextChar(-1);
+moved = true;
+} else if (gamepadState.axes.leftX > 0.5 || gamepadState.buttons.right) {
+app.focusNextChar(1);
+moved = true;
+}
+if (moved) {
+gamepadState.navCooldown = 10;
+AudioSys.ui();
+}
+}
+// Select Char (Cross)
+if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
+app.confirmCharSelection();
+}
+// Back (Circle)
+if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) {
+app.showStartScreen();
+}
+}
+// Shop Navigation
+if (currentState === GameState.SHOP) {
+if (gamepadState.navCooldown <= 0) {
+let moved = false;
+if (gamepadState.axes.leftY < -0.5 || gamepadState.buttons.up) {
+app.focusNextShopItem(-1);
+moved = true;
+} else if (gamepadState.axes.leftY > 0.5 || gamepadState.buttons.down) {
+app.focusNextShopItem(1);
+moved = true;
+}
+if (moved) {
+gamepadState.navCooldown = 10;
+AudioSys.ui();
+}
+}
+if (gamepadState.buttons.cross && !gamepadState.prevButtons.cross) {
+app.buyFocusedSkin();
+}
+if (gamepadState.buttons.circle && !gamepadState.prevButtons.circle) {
+app.showStartScreen();
+}
+}
+// Copy state for next frame edge detection
+gamepadState.prevButtons = { ...gamepadState.buttons };
+if (gamepadState.navCooldown > 0) gamepadState.navCooldown--;
+}
 function setupTouchControls() {
 if (!isMobile && !gamepadState.connected) return;
 if(gamepadState.connected) {
-    document.getElementById('mobileControls').classList.remove('active');
-    document.querySelector('.abilities-dock').style.display = 'flex';
-    document.getElementById('controllerHints').classList.add('visible');
-    return;
+document.getElementById('mobileControls').classList.remove('active');
+document.querySelector('.abilities-dock').style.display = 'flex';
+document.getElementById('controllerHints').classList.add('visible');
+return;
 }
-
 document.getElementById('mobileControls').classList.add('active');
 document.querySelector('.abilities-dock').style.display = 'none';
 document.getElementById('controllerHints').classList.remove('visible');
@@ -2166,7 +2183,16 @@ dodgeBtn.addEventListener('touchstart', (e) => { e.preventDefault(); if (player 
 }
 window.addEventListener('keydown', e => { keys[e.code] = true; if (currentState === 1 && ['Digit1','Digit2','Digit3','Digit4'].includes(e.code)) { e.preventDefault(); } });
 window.addEventListener('keyup', e => keys[e.code] = false);
-window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+window.addEventListener('mousemove', e => { 
+// Adjust mouse coordinates for camera if in multiplayer
+if(isMultiplayer && player) {
+mouse.x = e.clientX + camera.x;
+mouse.y = e.clientY + camera.y;
+} else {
+mouse.x = e.clientX; 
+mouse.y = e.clientY;
+}
+});
 window.addEventListener('mousedown', () => mouse.down = true);
 window.addEventListener('mouseup', () => mouse.down = false);
 const GameState = { MENU: 0, PLAYING: 1, GAMEOVER: 2, PAUSED: 3, BOSS_INTRO: 4, CHAR_SELECT: 5, SHOP: 6, SETTINGS: 7 };
@@ -2190,20 +2216,26 @@ let drones = [];
 let slashEffects = [];
 let conveyorBelts = [];
 let lootBoxes = [];
+// Camera System for Multiplayer
+let camera = { x: 0, y: 0 };
+const WORLD_WIDTH = 3000;
+const WORLD_HEIGHT = 3000;
 
 // Menu Navigation State
 let menuFocusIndex = 0;
 let charFocusIndex = 0;
 let shopFocusIndex = 0;
-
 function generateMap() {
 obstacles = [];
 decorations = [];
 conveyorBelts = [];
 lootBoxes = [];
 const tileSize = 60;
-const cols = Math.ceil(canvas.width / tileSize);
-const rows = Math.ceil(canvas.height / tileSize);
+// If MP, use world dimensions, else use canvas
+const w = isMultiplayer ? WORLD_WIDTH : canvas.width;
+const h = isMultiplayer ? WORLD_HEIGHT : canvas.height;
+const cols = Math.ceil(w / tileSize);
+const rows = Math.ceil(h / tileSize);
 for (let y = 0; y < rows; y++) {
 for (let x = 0; x < cols; x++) {
 const noise = Math.sin(x * 0.3) * Math.cos(y * 0.3) + Math.random() * 0.5;
@@ -2227,7 +2259,7 @@ else if (Math.random() > 0.8) { decorations.push({ x: x * tileSize + Math.random
 }
 // Spawn Loot Box every 5 waves
 if (wave > 1 && wave % 5 === 0 && !bossFightActive) {
-lootBoxes.push({ x: canvas.width/2, y: canvas.height/2, collected: false });
+lootBoxes.push({ x: w/2, y: h/2, collected: false });
 }
 }
 const CLASSES = {
@@ -2255,8 +2287,8 @@ tech_echo: { name: 'ECHO', className: 'TECH', color: '#ffffff', speed: 5, hp: 90
 class Player {
 constructor(classType) {
 const cls = CLASSES[classType];
-this.x = canvas.width / 2;
-this.y = canvas.height / 2;
+this.x = isMultiplayer ? WORLD_WIDTH / 2 : canvas.width / 2;
+this.y = isMultiplayer ? WORLD_HEIGHT / 2 : canvas.height / 2;
 this.radius = 22;
 this.angle = 0;
 this.classType = classType;
@@ -2288,44 +2320,39 @@ this.ninjaSlashes = 0;
 this.cloneActive = false;
 this.cloneTimer = 0;
 this.clonePos = { x: 0, y: 0 };
-
 // Apply Mod Color if exists
 if (modConfig.playerMods[classType]) {
-    this.customColor = modConfig.playerMods[classType];
+this.customColor = modConfig.playerMods[classType];
 } else {
-    this.customColor = cls.color;
+this.customColor = cls.color;
 }
 }
 update() {
 let dx = 0, dy = 0;
-
 // --- CONTROLLER INPUT OVERRIDE ---
 if (gamepadState.connected) {
-    dx = gamepadState.axes.leftX;
-    dy = gamepadState.axes.leftY;
-    
-    // Aim with Right Stick
-    if (Math.abs(gamepadState.axes.rightX) > 0.1 || Math.abs(gamepadState.axes.rightY) > 0.1) {
-        this.angle = Math.atan2(gamepadState.axes.rightY, gamepadState.axes.rightX);
-    } else if (dx !== 0 || dy !== 0) {
-        // If not aiming, face movement direction
-        this.angle = Math.atan2(dy, dx);
-    }
-} else {
-    // Keyboard / Touch Input
-    if (keys['KeyW'] || keys['ArrowUp']) dy = -1;
-    if (keys['KeyS'] || keys['ArrowDown']) dy = 1;
-    if (keys['KeyA'] || keys['ArrowLeft']) dx = -1;
-    if (keys['KeyD'] || keys['ArrowRight']) dx = 1;
-    if (joystick.active) { dx = Math.cos(joystick.angle) * joystick.magnitude; dy = Math.sin(joystick.angle) * joystick.magnitude; }
-    
-    if (!joystick.active || Math.abs(joystick.deltaX) < 5 && Math.abs(joystick.deltaY) < 5) { 
-        this.angle = Math.atan2(mouse.y - this.y, mouse.x - this.x); 
-    } else { 
-        this.angle = joystick.angle; 
-    }
+dx = gamepadState.axes.leftX;
+dy = gamepadState.axes.leftY;
+// Aim with Right Stick
+if (Math.abs(gamepadState.axes.rightX) > 0.1 || Math.abs(gamepadState.axes.rightY) > 0.1) {
+this.angle = Math.atan2(gamepadState.axes.rightY, gamepadState.axes.rightX);
+} else if (dx !== 0 || dy !== 0) {
+// If not aiming, face movement direction
+this.angle = Math.atan2(dy, dx);
 }
-
+} else {
+// Keyboard / Touch Input
+if (keys['KeyW'] || keys['ArrowUp']) dy = -1;
+if (keys['KeyS'] || keys['ArrowDown']) dy = 1;
+if (keys['KeyA'] || keys['ArrowLeft']) dx = -1;
+if (keys['KeyD'] || keys['ArrowRight']) dx = 1;
+if (joystick.active) { dx = Math.cos(joystick.angle) * joystick.magnitude; dy = Math.sin(joystick.angle) * joystick.magnitude; }
+if (!joystick.active || Math.abs(joystick.deltaX) < 5 && Math.abs(joystick.deltaY) < 5) {
+this.angle = Math.atan2(mouse.y - this.y, mouse.x - this.x);
+} else {
+this.angle = joystick.angle;
+}
+}
 // Movement Logic
 if (dx !== 0 || dy !== 0) {
 const len = Math.hypot(dx, dy);
@@ -2344,32 +2371,35 @@ break;
 }
 if (!collides) { this.x = nextX; this.y = nextY; }
 }
+// World Boundaries for MP
+if(isMultiplayer) {
+this.x = Math.max(this.radius, Math.min(WORLD_WIDTH - this.radius, this.x));
+this.y = Math.max(this.radius, Math.min(WORLD_HEIGHT - this.radius, this.y));
+} else {
 this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
 this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
-
+}
 // Shooting Logic
 if (this.fireCooldown > 0) this.fireCooldown--;
 if (mouse.down && this.fireCooldown <= 0 && this.energy >= 5) { this.shoot(); }
-
 // Charge Shot Logic (L2 Trigger or Mouse Hold)
-if ((mouse.down || mouse.specialCharge) && !this.chargeShot) { 
-    this.chargeShot = true; 
-    this.chargeLevel = 0; 
-    document.getElementById('chargeIndicator').classList.add('active'); 
+if ((mouse.down || mouse.specialCharge) && !this.chargeShot) {
+this.chargeShot = true;
+this.chargeLevel = 0;
+document.getElementById('chargeIndicator').classList.add('active');
 }
-if ((!mouse.down && !mouse.specialCharge) && this.chargeShot) { 
-    this.chargeShot = false; 
-    document.getElementById('chargeIndicator').classList.remove('active'); 
-    if (this.chargeLevel >= 50) { this.fireChargedShot(); } 
-    this.chargeLevel = 0; 
+if ((!mouse.down && !mouse.specialCharge) && this.chargeShot) {
+this.chargeShot = false;
+document.getElementById('chargeIndicator').classList.remove('active');
+if (this.chargeLevel >= 50) { this.fireChargedShot(); }
+this.chargeLevel = 0;
 }
-if (this.chargeShot && this.chargeLevel < this.maxChargeLevel) { 
-    this.chargeLevel += 2; 
-    AudioSys.charge(); 
-    const gradient = `conic-gradient(from 0deg, var(--neon-yellow) ${this.chargeLevel}%, transparent ${this.chargeLevel}%)`; 
-    document.getElementById('chargeFill').style.background = gradient; 
+if (this.chargeShot && this.chargeLevel < this.maxChargeLevel) {
+this.chargeLevel += 2;
+AudioSys.charge();
+const gradient = `conic-gradient(from 0deg, var(--neon-yellow) ${this.chargeLevel}%, transparent ${this.chargeLevel}%)`;
+document.getElementById('chargeFill').style.background = gradient;
 }
-
 if (this.energy < this.maxEnergy) this.energy += 0.3;
 if (this.specialCharge < this.maxSpecialCharge) { this.specialCharge += 0.05; }
 if (this.invisible) { this.invisibleTimer--; if (this.invisibleTimer <= 0) this.invisible = false; }
@@ -2381,6 +2411,19 @@ if (this.legendMode) { this.legendTimer--; if (this.legendTimer <= 0) this.legen
 if (this.cloneActive) { this.cloneTimer--; if (this.cloneTimer <= 0) this.cloneActive = false; }
 if (frameCount % 3 === 0) { this.trail.push({ x: this.x, y: this.y, alpha: 0.5 }); if (this.trail.length > 10) this.trail.shift(); }
 this.trail.forEach(t => t.alpha -= 0.05);
+
+// Sync to Firebase
+if(isMultiplayer && db && frameCount % 5 === 0) {
+mpRoomRef.child(myPlayerId).set({
+x: this.x,
+y: this.y,
+angle: this.angle,
+color: this.customColor,
+hp: this.hp,
+maxHp: this.maxHp,
+classType: this.classType
+});
+}
 }
 shoot() {
 this.fireCooldown = this.stats.fireRate;
@@ -2655,10 +2698,22 @@ ctx.shadowBlur = 0;
 }
 class Enemy {
 constructor(type) {
+// Spawn logic adjusted for MP world size
+let spawnX, spawnY;
+if(isMultiplayer) {
+// Spawn around player but within world bounds
+const angle = Math.random() * Math.PI * 2;
+const dist = 800 + Math.random() * 400; // Further away in big map
+spawnX = Math.max(50, Math.min(WORLD_WIDTH - 50, player.x + Math.cos(angle) * dist));
+spawnY = Math.max(50, Math.min(WORLD_HEIGHT - 50, player.y + Math.sin(angle) * dist));
+} else {
 const angle = Math.random() * Math.PI * 2;
 const dist = Math.max(canvas.width, canvas.height) / 1.5;
-this.x = canvas.width/2 + Math.cos(angle) * dist;
-this.y = canvas.height/2 + Math.sin(angle) * dist;
+spawnX = canvas.width/2 + Math.cos(angle) * dist;
+spawnY = canvas.height/2 + Math.sin(angle) * dist;
+}
+this.x = spawnX;
+this.y = spawnY;
 this.type = type;
 this.radius = type === 'boss' ? 55 : (type === 'fast' ? 18 : (type === 'ranger' ? 22 : 28));
 const hcMult = isHardcore ? 1.5 : 1.0;
@@ -2666,17 +2721,14 @@ const hcSpeed = isHardcore ? 1.3 : 1.0;
 this.hp = type === 'boss' ? 600 * (1 + wave * 0.2) * hcMult : (type === 'fast' ? 35 : (type === 'ranger' ? 40 : 90 * (1 + wave * 0.1))) * hcMult;
 this.maxHp = this.hp;
 this.speed = (type === 'fast' ? 7 : (type === 'boss' ? 2.5 : (type === 'ranger' ? 2 : 3.5))) * hcSpeed;
-
 // Default Colors
 let defaultColor = type === 'boss' ? '#ff0055' : (type === 'fast' ? '#ffaa00' : (type === 'ranger' ? '#00ff66' : '#aa00ff'));
-
 // Apply Boss Mod if exists
 if (type === 'boss' && modConfig.bossMods['1']) {
-    this.color = modConfig.bossMods['1'];
+this.color = modConfig.bossMods['1'];
 } else {
-    this.color = defaultColor;
+this.color = defaultColor;
 }
-
 this.value = type === 'boss' ? 1500 : (type === 'fast' ? 75 : (type === 'ranger' ? 60 : 120));
 this.angle = 0;
 this.shootCooldown = 0;
@@ -2794,8 +2846,8 @@ function createFloatingText(text, x, y, color, isCrit = false) {
 const el = document.createElement('div');
 el.className = 'damage-number';
 el.textContent = text;
-el.style.left = x + 'px';
-el.style.top = y + 'px';
+el.style.left = (x - camera.x) + 'px';
+el.style.top = (y - camera.y) + 'px';
 el.style.color = isCrit ? '#ffff00' : color;
 el.style.fontSize = isCrit ? '28px' : '20px';
 el.style.fontWeight = isCrit ? '900' : 'bold';
@@ -2804,14 +2856,15 @@ setTimeout(() => el.remove(), 800);
 }
 function showNotification(text, color) { const area = document.getElementById('notificationArea'); const el = document.createElement('div'); el.className = 'floating-text'; el.textContent = text; el.style.color = color; el.style.textShadow = `0 0 20px ${color}`; area.appendChild(el); setTimeout(() => el.remove(), 1200); }
 const app = {
-init: function() { 
-    loadMods().then(() => {
-        loadGame(); 
-        setupTouchControls(); 
-        generateMap(); 
-        this.loop(); 
-        this.initBgParticles(); 
-    });
+init: function() {
+loadMods().then(() => {
+loadGame();
+initFirebase();
+setupTouchControls();
+generateMap();
+this.loop();
+this.initBgParticles();
+});
 },
 initBgParticles: function() {
 const bgCanvas = document.getElementById('bgParticles');
@@ -2846,34 +2899,34 @@ requestAnimationFrame(animateBg);
 }
 animateBg();
 },
-showStartScreen: function() { 
-    currentState = GameState.MENU; 
-    menuFocusIndex = 0;
-    this.updateMenuFocus();
-    document.getElementById('startScreen').classList.remove('hidden'); 
-    document.getElementById('charSelectScreen').classList.add('hidden'); 
-    document.getElementById('gameOverScreen').classList.add('hidden'); 
-    document.getElementById('pauseScreen').classList.add('hidden'); 
-    document.getElementById('hud').classList.add('hidden'); 
-    document.getElementById('shopScreen').classList.add('hidden'); 
-    document.getElementById('settingsScreen').classList.add('hidden'); 
-    document.getElementById('controllerHints').classList.remove('visible'); 
-    AudioSys.ui(); 
+showStartScreen: function() {
+currentState = GameState.MENU;
+menuFocusIndex = 0;
+this.updateMenuFocus();
+document.getElementById('startScreen').classList.remove('hidden');
+document.getElementById('charSelectScreen').classList.add('hidden');
+document.getElementById('gameOverScreen').classList.add('hidden');
+document.getElementById('pauseScreen').classList.add('hidden');
+document.getElementById('hud').classList.add('hidden');
+document.getElementById('shopScreen').classList.add('hidden');
+document.getElementById('settingsScreen').classList.add('hidden');
+document.getElementById('controllerHints').classList.remove('visible');
+AudioSys.ui();
 },
-showCharacterSelect: function() { 
-    currentState = GameState.CHAR_SELECT; 
-    charFocusIndex = 0;
-    this.updateCharFocus();
-    document.getElementById('startScreen').classList.add('hidden'); 
-    document.getElementById('charSelectScreen').classList.remove('hidden'); 
-    document.querySelector('.character-select-container').scrollTop = 0; 
-    AudioSys.ui(); 
+showCharacterSelect: function() {
+currentState = GameState.CHAR_SELECT;
+charFocusIndex = 0;
+this.updateCharFocus();
+document.getElementById('startScreen').classList.add('hidden');
+document.getElementById('charSelectScreen').classList.remove('hidden');
+document.querySelector('.character-select-container').scrollTop = 0;
+AudioSys.ui();
 },
-selectChar: function(type, el) { 
-    document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected')); 
-    el.classList.add('selected'); 
-    player = new Player(type); 
-    AudioSys.ui(); 
+selectChar: function(type, el) {
+document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
+el.classList.add('selected');
+player = new Player(type);
+AudioSys.ui();
 },
 setSkin: function(color, dotEl) {
 if(!player) return;
@@ -2895,9 +2948,9 @@ btn.classList.add('active');
 AudioSys.ui();
 },
 showShop: function() {
-    currentState = GameState.SHOP;
-    shopFocusIndex = 0;
-    this.updateShopFocus();
+currentState = GameState.SHOP;
+shopFocusIndex = 0;
+this.updateShopFocus();
 document.getElementById('startScreen').classList.add('hidden');
 document.getElementById('shopScreen').classList.remove('hidden');
 const grid = document.getElementById('shopGrid');
@@ -2941,11 +2994,13 @@ saveGame();
 startGame: function() {
 if (!player) player = new Player('assault_viper');
 isHardcore = document.getElementById('hardcoreToggle').classList.contains('active');
+isMultiplayer = document.getElementById('mpToggle').classList.contains('active');
 currentState = GameState.PLAYING;
 bossFightActive = false;
 score = 0; kills = 0; combo = 0; wave = 1;
 bullets = []; enemies = []; particles = []; powerups = []; turrets = []; drones = []; slashEffects = [];
-player.x = canvas.width / 2; player.y = canvas.height / 2;
+player.x = isMultiplayer ? WORLD_WIDTH / 2 : canvas.width / 2; 
+player.y = isMultiplayer ? WORLD_HEIGHT / 2 : canvas.height / 2;
 generateMap();
 document.getElementById('classNameDisplay').textContent = player.stats.name;
 document.getElementById('classNameDisplay').style.color = player.customColor;
@@ -2956,14 +3011,24 @@ for (let i = 1; i <= 4; i++) { const ab = player.stats.abilities[i]; document.ge
 document.getElementById('charSelectScreen').classList.add('hidden');
 document.getElementById('gameOverScreen').classList.add('hidden');
 document.getElementById('hud').classList.remove('hidden');
-
 // Show controller hints if connected
 if(gamepadState.connected) {
-    document.getElementById('controllerHints').classList.add('visible');
+document.getElementById('controllerHints').classList.add('visible');
 } else {
-    document.getElementById('controllerHints').classList.remove('visible');
+document.getElementById('controllerHints').classList.remove('visible');
 }
-
+// Setup MP Room
+if(isMultiplayer && db) {
+const roomId = "room_alpha"; // Simple single room for now
+mpRoomRef = db.ref('rooms/' + roomId + '/players');
+mpRoomRef.on('value', (snapshot) => {
+remotePlayers = snapshot.val() || {};
+});
+// Cleanup on exit
+window.addEventListener('beforeunload', () => {
+if(mpRoomRef) mpRoomRef.child(myPlayerId).remove();
+});
+}
 this.updateUI();
 AudioSys.ui();
 },
@@ -2979,10 +3044,14 @@ document.getElementById('classPlayed').style.color = player.customColor;
 document.getElementById('gameOverScreen').classList.remove('hidden');
 document.getElementById('hud').classList.add('hidden');
 document.getElementById('controllerHints').classList.remove('visible');
+// Remove from MP
+if(isMultiplayer && mpRoomRef) {
+mpRoomRef.child(myPlayerId).remove();
+}
 },
 addScore: function(amount) { const multiplier = 1 + (combo * 0.15); const finalScore = Math.floor(amount * multiplier); score += finalScore; kills++; combo++; comboTimer = 150; if (combo % 10 === 0) { showNotification(`COMBO x${combo}!`, '#ffee00'); AudioSys.ability(); } this.updateUI(); },
 togglePause: function() { if (currentState === GameState.PLAYING) { currentState = GameState.PAUSED; document.getElementById('pauseScreen').classList.remove('hidden'); } else if (currentState === GameState.PAUSED) { currentState = GameState.PLAYING; document.getElementById('pauseScreen').classList.add('hidden'); } },
-quitGame: function() { currentState = GameState.MENU; document.getElementById('pauseScreen').classList.add('hidden'); document.getElementById('startScreen').classList.remove('hidden'); },
+quitGame: function() { currentState = GameState.MENU; document.getElementById('pauseScreen').classList.add('hidden'); document.getElementById('startScreen').classList.remove('hidden'); if(isMultiplayer && mpRoomRef) mpRoomRef.child(myPlayerId).remove(); },
 useAbility: function(id) {
 if (!player) return;
 const ab = player.abilities[id];
@@ -3074,9 +3143,9 @@ showNotification('DASH-X!', player.customColor);
 AudioSys.teleport();
 const corners = [
 { x: 50, y: 50 },
-{ x: canvas.width - 50, y: canvas.height - 50 },
-{ x: canvas.width - 50, y: 50 },
-{ x: 50, y: canvas.height - 50 }
+{ x: WORLD_WIDTH - 50, y: WORLD_HEIGHT - 50 },
+{ x: WORLD_WIDTH - 50, y: 50 },
+{ x: 50, y: WORLD_HEIGHT - 50 }
 ];
 let cornerIndex = 0;
 const dashInterval = setInterval(() => {
@@ -3236,91 +3305,85 @@ for(let i=0; i<bossCount; i++) {
 const b = new Enemy('boss');
 b.hp = 5000 * (isHardcore ? 1.5 : 1);
 b.maxHp = b.hp;
-b.x = canvas.width/2 + (i * 200);
-b.y = 100;
+b.x = player.x + (i * 200);
+b.y = player.y - 300;
 enemies.push(b);
 }
 AudioSys.boss();
 showNotification('MECHA-KING!', '#ff0055');
 }, 3000);
 },
-
 // --- MENU NAVIGATION FUNCTIONS ---
 updateMenuFocus: function() {
-    const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
-    buttons.forEach((btn, idx) => {
-        if(idx === menuFocusIndex) btn.classList.add('focused');
-        else btn.classList.remove('focused');
-    });
+const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
+buttons.forEach((btn, idx) => {
+if(idx === menuFocusIndex) btn.classList.add('focused');
+else btn.classList.remove('focused');
+});
 },
 focusNextButton: function(dir) {
-    const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
-    if(buttons.length === 0) return;
-    menuFocusIndex += dir;
-    if(menuFocusIndex < 0) menuFocusIndex = buttons.length - 1;
-    if(menuFocusIndex >= buttons.length) menuFocusIndex = 0;
-    this.updateMenuFocus();
+const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
+if(buttons.length === 0) return;
+menuFocusIndex += dir;
+if(menuFocusIndex < 0) menuFocusIndex = buttons.length - 1;
+if(menuFocusIndex >= buttons.length) menuFocusIndex = 0;
+this.updateMenuFocus();
 },
 activateFocusedButton: function() {
-    const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
-    if(buttons[menuFocusIndex]) buttons[menuFocusIndex].click();
+const buttons = document.querySelectorAll('#startScreen .btn-main, #gameOverScreen .btn-main');
+if(buttons[menuFocusIndex]) buttons[menuFocusIndex].click();
 },
-
 updateCharFocus: function() {
-    const cards = document.querySelectorAll('.char-card');
-    cards.forEach((card, idx) => {
-        if(idx === charFocusIndex) {
-            card.classList.add('focused');
-            card.scrollIntoView({behavior: "smooth", block: "center"});
-        } else {
-            card.classList.remove('focused');
-        }
-    });
+const cards = document.querySelectorAll('.char-card');
+cards.forEach((card, idx) => {
+if(idx === charFocusIndex) {
+card.classList.add('focused');
+card.scrollIntoView({behavior: "smooth", block: "center"});
+} else {
+card.classList.remove('focused');
+}
+});
 },
 focusNextChar: function(dir) {
-    const cards = document.querySelectorAll('.char-card');
-    if(cards.length === 0) return;
-    charFocusIndex += dir;
-    if(charFocusIndex < 0) charFocusIndex = cards.length - 1;
-    if(charFocusIndex >= cards.length) charFocusIndex = 0;
-    this.updateCharFocus();
+const cards = document.querySelectorAll('.char-card');
+if(cards.length === 0) return;
+charFocusIndex += dir;
+if(charFocusIndex < 0) charFocusIndex = cards.length - 1;
+if(charFocusIndex >= cards.length) charFocusIndex = 0;
+this.updateCharFocus();
 },
 confirmCharSelection: function() {
-    const cards = document.querySelectorAll('.char-card');
-    if(cards[charFocusIndex]) {
-        cards[charFocusIndex].click();
-        AudioSys.ui();
-    }
+const cards = document.querySelectorAll('.char-card');
+if(cards[charFocusIndex]) {
+cards[charFocusIndex].click();
+AudioSys.ui();
+}
 },
-
 updateShopFocus: function() {
-    const items = document.querySelectorAll('.shop-item');
-    items.forEach((item, idx) => {
-        if(idx === shopFocusIndex) item.classList.add('focused');
-        else item.classList.remove('focused');
-    });
+const items = document.querySelectorAll('.shop-item');
+items.forEach((item, idx) => {
+if(idx === shopFocusIndex) item.classList.add('focused');
+else item.classList.remove('focused');
+});
 },
 focusNextShopItem: function(dir) {
-    const items = document.querySelectorAll('.shop-item');
-    if(items.length === 0) return;
-    shopFocusIndex += dir;
-    if(shopFocusIndex < 0) shopFocusIndex = items.length - 1;
-    if(shopFocusIndex >= items.length) shopFocusIndex = 0;
-    this.updateShopFocus();
+const items = document.querySelectorAll('.shop-item');
+if(items.length === 0) return;
+shopFocusIndex += dir;
+if(shopFocusIndex < 0) shopFocusIndex = items.length - 1;
+if(shopFocusIndex >= items.length) shopFocusIndex = 0;
+this.updateShopFocus();
 },
 buyFocusedSkin: function() {
-    const items = document.querySelectorAll('.shop-item');
-    const btn = items[shopFocusIndex]?.querySelector('.buy-btn');
-    if(btn && !btn.disabled) btn.click();
+const items = document.querySelectorAll('.shop-item');
+const btn = items[shopFocusIndex]?.querySelector('.buy-btn');
+if(btn && !btn.disabled) btn.click();
 },
-
 loop: function() {
 requestAnimationFrame(() => this.loop());
-
 // Poll Controller Every Frame
 pollGamepad();
 setupTouchControls(); // Re-check connection status
-
 ctx.fillStyle = currentMap === 'desert' ? '#3e2723' : (currentMap === 'robot' ? '#263238' : '#1a2f1a');
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 if (screenShake > 0) { ctx.save(); const dx = (Math.random() - 0.5) * screenShake; const dy = (Math.random() - 0.5) * screenShake; ctx.translate(dx, dy); screenShake *= 0.9; if (screenShake < 0.5) screenShake = 0; }
@@ -3328,6 +3391,20 @@ if (currentState === GameState.PLAYING || currentState === GameState.BOSS_INTRO)
 frameCount++;
 if (comboTimer > 0) { comboTimer--; if (comboTimer <= 0) combo = 0; }
 player.update();
+// Camera Logic for MP
+if(isMultiplayer) {
+camera.x = player.x - canvas.width / 2;
+camera.y = player.y - canvas.height / 2;
+// Clamp camera
+camera.x = Math.max(0, Math.min(camera.x, WORLD_WIDTH - canvas.width));
+camera.y = Math.max(0, Math.min(camera.y, WORLD_HEIGHT - canvas.height));
+ctx.save();
+ctx.translate(-camera.x, -camera.y);
+// Draw World Borders
+ctx.strokeStyle = '#ff0055';
+ctx.lineWidth = 5;
+ctx.strokeRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+}
 player.draw();
 this.spawnEnemies();
 if (currentMap === 'prairie') {
@@ -3446,7 +3523,7 @@ return b.life > 0;
 let hitObs = false;
 for (let obs of obstacles) { if (b.x > obs.x && b.x < obs.x + obs.width && b.y > obs.y && b.y < obs.y + obs.height) { hitObs = true; createParticles(b.x, b.y, '#888', 5); break; } }
 if (hitObs) return false;
-if (b.isGrenade) { ctx.beginPath(); ctx.arc(b.x, b.y, 15, 0, Math.PI*2); ctx.fillStyle = '#ffaa00'; ctx.shadowBlur = 20; ctx.shadowColor = '#ffaa00'; ctx.fill(); ctx.shadowBlur = 0; return b.x > 0 && b.x < canvas.width && b.y > 0 && b.y < canvas.height; }
+if (b.isGrenade) { ctx.beginPath(); ctx.arc(b.x, b.y, 15, 0, Math.PI*2); ctx.fillStyle = '#ffaa00'; ctx.shadowBlur = 20; ctx.shadowColor = '#ffaa00'; ctx.fill(); ctx.shadowBlur = 0; return b.x > 0 && b.x < (isMultiplayer?WORLD_WIDTH:canvas.width) && b.y > 0 && b.y < (isMultiplayer?WORLD_HEIGHT:canvas.height); }
 ctx.beginPath(); ctx.arc(b.x, b.y, b.size || 5, 0, Math.PI * 2); ctx.fillStyle = b.color; ctx.shadowBlur = 10; ctx.shadowColor = b.color; ctx.fill(); ctx.shadowBlur = 0;
 if (b.heal) { const dist = Math.hypot(b.x - player.x, b.y - player.y); if (dist < 30) { player.hp = Math.min(player.maxHp, player.hp + b.healPower || 10); AudioSys.shoot('heal'); return false; } }
 if (b.isPlayer) {
@@ -3462,7 +3539,7 @@ if (player.deathAuraActive && player.classType === 'assault_reaper') { const dis
 }
 }
 });
-return !hit && b.x > -50 && b.x < canvas.width + 50 && b.y > -50 && b.y < canvas.height + 50;
+return !hit && b.x > -50 && b.x < (isMultiplayer?WORLD_WIDTH+50:canvas.width + 50) && b.y > -50 && b.y < (isMultiplayer?WORLD_HEIGHT+50:canvas.height + 50);
 }
 else {
 const dist = Math.hypot(b.x - player.x, b.y - player.y);
@@ -3479,7 +3556,7 @@ if (player.hp <= 0) app.gameOver();
 }
 return false;
 }
-return b.x > -50 && b.x < canvas.width + 50 && b.y > -50 && b.y < canvas.height + 50;
+return b.x > -50 && b.x < (isMultiplayer?WORLD_WIDTH+50:canvas.width + 50) && b.y > -50 && b.y < (isMultiplayer?WORLD_HEIGHT+50:canvas.height + 50);
 }
 });
 turrets = turrets.filter(t => { t.update(); t.draw(); return t.duration > 0; });
@@ -3556,20 +3633,53 @@ return true;
 if (player.visionMode) { ctx.fillStyle = 'rgba(0, 243, 255, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height); enemies.forEach(e => { ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(e.x, e.y, e.radius + 5, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)'; ctx.beginPath(); ctx.moveTo(player.x, player.y); ctx.lineTo(e.x, e.y); ctx.stroke(); }); }
 if (player.deathAuraActive) { ctx.fillStyle = 'rgba(255, 68, 68, 0.1)'; ctx.beginPath(); ctx.arc(player.x, player.y, 200, 0, Math.PI * 2); ctx.fill(); enemies.forEach(e => { const dist = Math.hypot(e.x - player.x, e.y - player.y); if (dist < 200) { e.takeDamage(0.5); } }); }
 if (player.legendMode) { ctx.fillStyle = 'rgba(255, 215, 0, 0.15)'; ctx.beginPath(); ctx.arc(player.x, player.y, 250, 0, Math.PI * 2); ctx.fill(); enemies.forEach(e => { const dist = Math.hypot(e.x - player.x, e.y - player.y); if (dist < 250) { e.takeDamage(1); } }); }
+// Render Remote Players
+if(isMultiplayer) {
+for(const [id, pData] of Object.entries(remotePlayers)) {
+if(id === myPlayerId) continue;
+ctx.save();
+ctx.translate(pData.x, pData.y);
+ctx.rotate(pData.angle);
+ctx.fillStyle = pData.color;
+ctx.beginPath();
+ctx.moveTo(22, 0);
+ctx.lineTo(-10, 15);
+ctx.lineTo(-10, -15);
+ctx.fill();
+// Name Tag
+ctx.rotate(-pData.angle);
+ctx.fillStyle = "#fff";
+ctx.font = "12px Rajdhani";
+ctx.textAlign = "center";
+ctx.fillText("Player", 0, -30);
+ctx.restore();
+}
+}
+if (player.visionMode) { ctx.fillStyle = 'rgba(0, 243, 255, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height); enemies.forEach(e => { ctx.strokeStyle = '#ff0000'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(e.x, e.y, e.radius + 5, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)'; ctx.beginPath(); ctx.moveTo(player.x, player.y); ctx.lineTo(e.x, e.y); ctx.stroke(); }); }
+if (player.deathAuraActive) { ctx.fillStyle = 'rgba(255, 68, 68, 0.1)'; ctx.beginPath(); ctx.arc(player.x, player.y, 200, 0, Math.PI * 2); ctx.fill(); enemies.forEach(e => { const dist = Math.hypot(e.x - player.x, e.y - player.y); if (dist < 200) { e.takeDamage(0.5); } }); }
+if (player.legendMode) { ctx.fillStyle = 'rgba(255, 215, 0, 0.15)'; ctx.beginPath(); ctx.arc(player.x, player.y, 250, 0, Math.PI * 2); ctx.fill(); enemies.forEach(e => { const dist = Math.hypot(e.x - player.x, e.y - player.y); if (dist < 250) { e.takeDamage(1); } }); }
 if (keys['Digit1']) { keys['Digit1'] = false; this.useAbility(1); }
 if (keys['Digit2']) { keys['Digit2'] = false; this.useAbility(2); }
 if (keys['Digit3']) { keys['Digit3'] = false; this.useAbility(3); }
 if (keys['Digit4']) { keys['Digit4'] = false; this.useAbility(4); }
 this.updateUI();
+if(isMultiplayer) ctx.restore(); // Restore camera translation
 }
 mmCtx.clearRect(0, 0, 150, 150);
 mmCtx.fillStyle = currentMap === 'desert' ? '#3e2723' : (currentMap === 'robot' ? '#263238' : '#1a2f1a');
 mmCtx.fillRect(0,0,150,150);
-const scaleX = 150 / canvas.width;
-const scaleY = 150 / canvas.height;
+const scaleX = 150 / (isMultiplayer ? WORLD_WIDTH : canvas.width);
+const scaleY = 150 / (isMultiplayer ? WORLD_HEIGHT : canvas.height);
 if (player) { mmCtx.fillStyle = player.customColor; mmCtx.beginPath(); mmCtx.arc(player.x * scaleX, player.y * scaleY, 5, 0, Math.PI*2); mmCtx.fill(); }
 enemies.forEach(e => { mmCtx.fillStyle = e.color; mmCtx.fillRect(e.x * scaleX - 2, e.y * scaleY - 2, 4, 4); });
 turrets.forEach(t => { mmCtx.fillStyle = '#ff8800'; mmCtx.beginPath(); mmCtx.arc(t.x * scaleX, t.y * scaleY, 3, 0, Math.PI*2); mmCtx.fill(); });
+if(isMultiplayer) {
+for(const [id, pData] of Object.entries(remotePlayers)) {
+if(id === myPlayerId) continue;
+mmCtx.fillStyle = '#fff';
+mmCtx.fillRect(pData.x * scaleX - 2, pData.y * scaleY - 2, 4, 4);
+}
+}
 if (screenShake > 0) ctx.restore();
 },
 showDamageDirection: function(ex, ey) {
