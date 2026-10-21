@@ -1149,6 +1149,260 @@ margin-top: 5px;
 }
 .mp-status.online { color: var(--neon-green); }
 .mp-status.offline { color: var(--neon-red); }
+
+/* === CREDITS SCREEN === */
+#creditsScreen {
+background: radial-gradient(circle at center, rgba(20, 5, 40, 0.97), rgba(5, 5, 16, 0.99));
+}
+.credits-content {
+text-align: center;
+max-width: 600px;
+padding: 40px 30px;
+}
+.credits-logo {
+font-size: 56px;
+font-weight: 900;
+letter-spacing: 4px;
+background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+-webkit-background-clip: text;
+color: transparent;
+text-shadow: 0 0 40px rgba(170, 0, 255, 0.5);
+margin-bottom: 8px;
+animation: pulseTitle 3s infinite;
+}
+.credits-subtitle {
+color: #888;
+font-size: 13px;
+letter-spacing: 4px;
+text-transform: uppercase;
+margin-bottom: 35px;
+}
+.credits-card {
+background: rgba(255, 255, 255, 0.04);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 16px;
+padding: 25px 20px;
+margin: 12px 0;
+backdrop-filter: blur(8px);
+transition: all 0.3s;
+}
+.credits-card:hover {
+border-color: var(--neon-blue);
+box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
+transform: translateY(-3px);
+}
+.credits-card .role-label {
+color: var(--neon-blue);
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+margin-bottom: 8px;
+}
+.credits-card .role-name {
+color: #fff;
+font-size: 22px;
+font-weight: 700;
+text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+}
+.credits-divider {
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+margin: 20px 0;
+}
+.credits-footer {
+color: #555;
+font-size: 11px;
+letter-spacing: 2px;
+margin-top: 20px;
+text-transform: uppercase;
+}
+.credits-version {
+color: var(--neon-yellow);
+font-size: 12px;
+margin-top: 8px;
+letter-spacing: 1px;
+}
+
+/* === TITLE CLICK HINT (subtle) === */
+#lobbyTitle {
+cursor: pointer;
+user-select: none;
+-webkit-user-select: none;
+transition: transform 0.15s ease, filter 0.3s ease;
+}
+#lobbyTitle:hover {
+transform: scale(1.02);
+}
+#lobbyTitle:active {
+transform: scale(0.98);
+}
+#lobbyTitle.tap-pulse {
+animation: titleTapPulse 0.3s ease-out;
+}
+@keyframes titleTapPulse {
+0% { transform: scale(1); filter: brightness(1); }
+50% { transform: scale(0.96); filter: brightness(1.4) hue-rotate(15deg); }
+100% { transform: scale(1); filter: brightness(1); }
+}
+.title-progress {
+position: absolute;
+top: -8px;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+gap: 4px;
+opacity: 0;
+transition: opacity 0.2s;
+}
+.title-progress.visible {
+opacity: 1;
+}
+.title-progress .dot {
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(--neon-blue);
+box-shadow: 0 0 8px var(--neon-blue);
+opacity: 0.3;
+transition: all 0.2s;
+}
+.title-progress .dot.filled {
+opacity: 1;
+background: var(--neon-yellow);
+box-shadow: 0 0 12px var(--neon-yellow);
+}
+
+/* === SOCIAL BUTTONS STACK (discreet) === */
+.social-stack {
+position: fixed;
+bottom: 18px;
+left: 18px;
+display: flex;
+flex-direction: column-reverse; /* WhatsApp in basso, altri sopra */
+gap: 8px;
+z-index: 90;
+}
+.social-stack.hidden {
+display: none !important;
+}
+.social-fab {
+width: 42px;
+height: 42px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+text-decoration: none;
+border: 1px solid rgba(255, 255, 255, 0.15);
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+opacity: 0.55;
+transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+position: relative;
+}
+.social-fab:hover {
+transform: scale(1.08);
+opacity: 1;
+}
+.social-fab:active {
+transform: scale(0.92);
+}
+.social-fab svg {
+width: 22px;
+height: 22px;
+fill: #fff;
+}
+/* Brand colors (semi-transparent for discretion) */
+.social-fab.whatsapp { background: rgba(37, 211, 102, 0.85); }
+.social-fab.whatsapp:hover { background: rgba(37, 211, 102, 1); }
+.social-fab.instagram { background: rgba(225, 48, 108, 0.85); }
+.social-fab.instagram:hover { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.social-fab.youtube { background: rgba(255, 0, 0, 0.85); }
+.social-fab.youtube:hover { background: #ff0000; }
+.social-fab.facebook { background: rgba(24, 119, 242, 0.85); }
+.social-fab.facebook:hover { background: #1877f2; }
+/* Small "coming soon" dot on inactive socials */
+.social-fab.coming-soon::after {
+content: '';
+position: absolute;
+top: -1px;
+right: -1px;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: var(--neon-yellow);
+box-shadow: 0 0 6px var(--neon-yellow);
+border: 1.5px solid #050510;
+}
+@media (max-width: 768px) {
+.social-stack {
+bottom: 14px;
+left: 14px;
+gap: 6px;
+}
+.social-fab {
+width: 38px;
+height: 38px;
+opacity: 0.6;
+}
+.social-fab svg {
+width: 20px;
+height: 20px;
+}
+}
+
+/* === SOCIAL TOAST (coming soon message) === */
+.social-toast {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0.9);
+background: rgba(10, 10, 20, 0.95);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border: 1px solid var(--neon-blue);
+border-radius: 16px;
+padding: 28px 35px;
+text-align: center;
+z-index: 1000;
+opacity: 0;
+transition: opacity 0.3s, transform 0.3s;
+pointer-events: none;
+max-width: 340px;
+box-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
+}
+.social-toast.visible {
+opacity: 1;
+transform: translate(-50%, -50%) scale(1);
+}
+.social-toast-icon {
+font-size: 38px;
+margin-bottom: 10px;
+line-height: 1;
+}
+.social-toast-title {
+font-size: 22px;
+font-weight: 700;
+color: var(--neon-yellow);
+margin-bottom: 10px;
+letter-spacing: 1px;
+text-shadow: 0 0 15px rgba(255, 238, 0, 0.4);
+}
+.social-toast-text {
+color: #ccc;
+font-size: 14px;
+line-height: 1.5;
+}
+.social-toast-brand {
+color: #fff;
+font-weight: 700;
+font-size: 15px;
+margin-top: 12px;
+padding: 6px 14px;
+background: rgba(255, 255, 255, 0.08);
+border-radius: 20px;
+display: inline-block;
+}
 </style>
 </head>
 <body>
@@ -1269,7 +1523,10 @@ margin-top: 5px;
 </div>
 <div id="startScreen" class="menu-screen">
 <canvas id="bgParticles" class="bg-particles"></canvas>
-<h1 class="title" id="lobbyTitle">NEON ARENA</h1>
+<h1 class="title" id="lobbyTitle" onclick="app.handleTitleClick(event)" title="">NEON ARENA</h1>
+<div class="title-progress" id="titleProgress">
+<span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+</div>
 <p style="color: #aaa; margin-bottom: 10px; letter-spacing: 3px;">ELITE SQUAD EDITION</p>
 <p style="color: #666; font-size: 14px; margin-bottom: 10px;">20 OPERATORI UNICI • 6 CLASSI</p>
 <p style="color: #00f3ff; font-size: 12px; margin-bottom: 20px;"> MOBILE • 🎮 PS5 CONTROLLER SUPPORT • 🔧 MODDABLE</p>
@@ -1286,6 +1543,41 @@ margin-top: 5px;
 <button class="btn-main" style="border-color: #ffd700;" onclick="app.showShop()">SHOP SKIN</button>
 <button class="btn-main" style="border-color: #aaa;" onclick="app.showSettings()">IMPOSTAZIONI</button>
 </div>
+
+<!-- === CREDITS SCREEN (hidden, shown after 5 title clicks) === -->
+<div id="creditsScreen" class="menu-screen hidden">
+<div class="credits-content">
+<div class="credits-logo">RL SOFTWARE</div>
+<div class="credits-subtitle">presenta</div>
+<div class="credits-logo" style="font-size: 42px; margin-top: 10px;">NEON ARENA</div>
+<div class="credits-subtitle">ELITE SQUAD EDITION</div>
+
+<div class="credits-divider"></div>
+
+<div class="credits-card">
+<div class="role-label">Creato da</div>
+<div class="role-name">RL SOFTWARE</div>
+</div>
+
+<div class="credits-card">
+<div class="role-label">Ideato da</div>
+<div class="role-name">Leonardo Annulli</div>
+</div>
+
+<div class="credits-card">
+<div class="role-label">Programmato da</div>
+<div class="role-name">Leonardo Annulli</div>
+</div>
+
+<div class="credits-divider"></div>
+
+<div class="credits-footer">UN PROGETTO RL SOFTWARE</div>
+<div class="credits-version">Versione Elite Squad Edition</div>
+
+<button class="btn-main" style="margin-top: 35px; border-color: var(--neon-purple);" onclick="app.hideCredits()">CHIUDI</button>
+</div>
+</div>
+
 <div id="charSelectScreen" class="menu-screen hidden">
 <h2 style="font-size: 36px; margin-bottom: 10px; color: var(--neon-blue);">SCEGLI IL TUO OPERATORE</h2>
 <p style="color: #888; margin-bottom: 15px;">Ogni operatore ha armi e abilità uniche</p>
@@ -2910,7 +3202,82 @@ document.getElementById('pauseScreen').classList.add('hidden');
 document.getElementById('hud').classList.add('hidden');
 document.getElementById('shopScreen').classList.add('hidden');
 document.getElementById('settingsScreen').classList.add('hidden');
+document.getElementById('creditsScreen').classList.add('hidden');
+this.resetTitleClicks();
+this.setWhatsappVisible(true); // Mostra WhatsApp sui menu
 document.getElementById('controllerHints').classList.remove('visible');
+AudioSys.ui();
+},
+// === CREDITS EASTER EGG (5 click sul titolo) ===
+titleClickCount: 0,
+titleClickTimer: null,
+handleTitleClick: function(e) {
+if (e) e.stopPropagation();
+this.titleClickCount++;
+// Effetto visivo: piccolo pulse ad ogni click
+const titleEl = document.getElementById('lobbyTitle');
+titleEl.classList.remove('tap-pulse');
+void titleEl.offsetWidth;
+titleEl.classList.add('tap-pulse');
+// Mostra i pallini di progresso (i 5 click)
+const progressEl = document.getElementById('titleProgress');
+progressEl.classList.add('visible');
+const dots = progressEl.querySelectorAll('.dot');
+dots.forEach((dot, idx) => {
+if (idx < this.titleClickCount) dot.classList.add('filled');
+else dot.classList.remove('filled');
+});
+// Reset del contatore se l'utente impiega piu' di 1.5s tra un click e l'altro
+if (this.titleClickTimer) clearTimeout(this.titleClickTimer);
+this.titleClickTimer = setTimeout(() => {
+this.resetTitleClicks();
+}, 1500);
+// Al 5° click apri i crediti
+if (this.titleClickCount >= 5) {
+this.titleClickCount = 0;
+if (this.titleClickTimer) { clearTimeout(this.titleClickTimer); this.titleClickTimer = null; }
+this.showCredits();
+}
+AudioSys.ui();
+},
+resetTitleClicks: function() {
+this.titleClickCount = 0;
+if (this.titleClickTimer) { clearTimeout(this.titleClickTimer); this.titleClickTimer = null; }
+const progressEl = document.getElementById('titleProgress');
+if (progressEl) {
+progressEl.classList.remove('visible');
+progressEl.querySelectorAll('.dot').forEach(d => d.classList.remove('filled'));
+}
+},
+showCredits: function() {
+document.getElementById('startScreen').classList.add('hidden');
+document.getElementById('creditsScreen').classList.remove('hidden');
+this.resetTitleClicks();
+AudioSys.legend();
+},
+hideCredits: function() {
+document.getElementById('creditsScreen').classList.add('hidden');
+document.getElementById('startScreen').classList.remove('hidden');
+AudioSys.ui();
+},
+// Mostra/nasconde l'intero stack dei pulsanti social in base allo stato di gioco
+setWhatsappVisible: function(visible) {
+const stack = document.getElementById('socialStack');
+if (stack) { visible ? stack.classList.remove('hidden') : stack.classList.add('hidden'); }
+},
+// Mostra il toast "presto disponibile" per i social non ancora attivi
+_socialToastTimer: null,
+showSocialToast: function(brandName, event) {
+if (event) { event.preventDefault(); event.stopPropagation(); }
+const toast = document.getElementById('socialToast');
+const brandEl = document.getElementById('socialToastBrand');
+if (!toast) return;
+if (brandEl && brandName) brandEl.textContent = brandName;
+toast.classList.add('visible');
+if (this._socialToastTimer) clearTimeout(this._socialToastTimer);
+this._socialToastTimer = setTimeout(() => {
+toast.classList.remove('visible');
+}, 2800);
 AudioSys.ui();
 },
 showCharacterSelect: function() {
@@ -3030,6 +3397,7 @@ if(mpRoomRef) mpRoomRef.child(myPlayerId).remove();
 });
 }
 this.updateUI();
+this.setWhatsappVisible(false); // Nascondi WhatsApp durante il gameplay
 AudioSys.ui();
 },
 gameOver: function() {
@@ -3050,8 +3418,8 @@ mpRoomRef.child(myPlayerId).remove();
 }
 },
 addScore: function(amount) { const multiplier = 1 + (combo * 0.15); const finalScore = Math.floor(amount * multiplier); score += finalScore; kills++; combo++; comboTimer = 150; if (combo % 10 === 0) { showNotification(`COMBO x${combo}!`, '#ffee00'); AudioSys.ability(); } this.updateUI(); },
-togglePause: function() { if (currentState === GameState.PLAYING) { currentState = GameState.PAUSED; document.getElementById('pauseScreen').classList.remove('hidden'); } else if (currentState === GameState.PAUSED) { currentState = GameState.PLAYING; document.getElementById('pauseScreen').classList.add('hidden'); } },
-quitGame: function() { currentState = GameState.MENU; document.getElementById('pauseScreen').classList.add('hidden'); document.getElementById('startScreen').classList.remove('hidden'); if(isMultiplayer && mpRoomRef) mpRoomRef.child(myPlayerId).remove(); },
+togglePause: function() { if (currentState === GameState.PLAYING) { currentState = GameState.PAUSED; document.getElementById('pauseScreen').classList.remove('hidden'); this.setWhatsappVisible(true); } else if (currentState === GameState.PAUSED) { currentState = GameState.PLAYING; document.getElementById('pauseScreen').classList.add('hidden'); this.setWhatsappVisible(false); } },
+quitGame: function() { currentState = GameState.MENU; document.getElementById('pauseScreen').classList.add('hidden'); document.getElementById('startScreen').classList.remove('hidden'); this.setWhatsappVisible(true); if(isMultiplayer && mpRoomRef) mpRoomRef.child(myPlayerId).remove(); },
 useAbility: function(id) {
 if (!player) return;
 const ab = player.abilities[id];
@@ -3703,6 +4071,62 @@ el.style.opacity = 0;
 };
 app.init();
 </script>
+
+<!-- === SOCIAL BUTTONS STACK === -->
+<!-- WhatsApp (attivo) + Instagram / YouTube / Facebook (coming soon) -->
+<!-- ⚠️ SOSTITUISCI L'URL WHATSAPP SOTTO CON IL LINK REALE DEL TUO CANALE -->
+<!-- Formato canale: https://whatsapp.com/channel/XXXXXXXXXXXX -->
+<!-- Formato chat:   https://wa.me/39XXXXXXXXXX -->
+<div class="social-stack" id="socialStack">
+  <!-- WhatsApp (attivo) -->
+  <a href="https://whatsapp.com/channel/0029Vb6MyL01dAw7U6RFTv1g" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     class="social-fab whatsapp"
+     title="Iscriviti al canale WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+  <!-- Facebook (coming soon) -->
+  <a href="#" onclick="app.showSocialToast('Facebook', event); return false;" 
+     class="social-fab facebook coming-soon"
+     title="Facebook - presto disponibile">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/>
+    </svg>
+  </a>
+
+  <!-- YouTube (coming soon) -->
+  <a href="#" onclick="app.showSocialToast('YouTube', event); return false;" 
+     class="social-fab youtube coming-soon"
+     title="YouTube - presto disponibile">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2C0 8.07 0 12 0 12s0 3.93.5 5.8a3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/>
+    </svg>
+  </a>
+
+  <!-- Instagram (coming soon) -->
+  <a href="#" onclick="app.showSocialToast('Instagram', event); return false;" 
+     class="social-fab instagram coming-soon"
+     title="Instagram - presto disponibile">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.81.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.81-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.81-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.81.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.39C1.34 2.69.93 3.36.62 4.15.32 4.91.12 5.79.06 7.06.01 8.34 0 8.75 0 12s.01 3.66.07 4.94c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.39 2.13.67.67 1.34 1.08 2.13 1.39.76.3 1.64.5 2.91.56C8.34 23.99 8.75 24 12 24s3.66-.01 4.94-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.39.67-.67 1.08-1.34 1.39-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.94s-.01-3.66-.07-4.94c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.39-2.13C20.31 1.34 19.64.93 18.85.62c-.76-.3-1.64-.5-2.91-.56C14.66.01 14.25 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zM12 16a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm6.41-10.85a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44z"/>
+    </svg>
+  </a>
+</div>
+
+<!-- === SOCIAL TOAST (coming soon message) === -->
+<div class="social-toast" id="socialToast">
+  <div class="social-toast-icon">⏳</div>
+  <div class="social-toast-title">PRESTO DISPONIBILE!</div>
+  <div class="social-toast-text">
+    Questi canali non sono ancora stati attivati, ma lo saranno a breve.<br>
+    Restate sintonizzati!
+  </div>
+  <div class="social-toast-brand" id="socialToastBrand">Facebook</div>
+</div>
 </body>
 </html>
 
